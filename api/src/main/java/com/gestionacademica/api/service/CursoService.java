@@ -46,5 +46,45 @@ public class CursoService {
     public void eliminarCurso(String codigo) {
         cursoRepository.deleteById(codigo);
     }
+
+// ====== DTO conversion and filtered listing for Tarea 5 ======
+@org.springframework.stereotype.Service
+public static class _CursoDTOHelper {}
+
+public com.gestionacademica.api.dto.CursoDTO toDTO(com.gestionacademica.api.entity.Curso c) {
+    if (c == null) return null;
+    Integer profId = (c.getProfesor() != null ? c.getProfesor().getId() : null);
+    String profNom = (c.getProfesor() != null ? c.getProfesor().getNombreCompleto() : null);
+    String preCod = (c.getPrerequisito() != null ? c.getPrerequisito().getCodigo() : null);
+    return new com.gestionacademica.api.dto.CursoDTO(
+        c.getCodigo(),
+        c.getNombre(),
+        c.getCreditos(),
+        c.getSemestre(),
+        c.getCiclo(),
+        profId,
+        profNom,
+        preCod
+    );
 }
 
+public java.util.List<com.gestionacademica.api.dto.CursoDTO> listarDTO(String ciclo, String semestre, Integer profesorId, String prerequisito) {
+    java.util.List<com.gestionacademica.api.entity.Curso> base;
+    if (ciclo != null && !ciclo.isBlank()) {
+        base = cursoRepository.findByCicloIgnoreCase(ciclo);
+    } else if (semestre != null && !semestre.isBlank()) {
+        base = cursoRepository.findBySemestre(semestre);
+    } else if (profesorId != null) {
+        base = cursoRepository.findByProfesor_Id(profesorId);
+    } else if (prerequisito != null && !prerequisito.isBlank()) {
+        base = cursoRepository.findByPrerequisito_Codigo(prerequisito);
+    } else {
+        base = cursoRepository.findAll();
+    }
+    return base.stream().map(this::toDTO).toList();
+}
+
+public java.util.Optional<com.gestionacademica.api.dto.CursoDTO> obtenerDTO(String codigo) {
+    return cursoRepository.findById(codigo).map(this::toDTO);
+}
+}

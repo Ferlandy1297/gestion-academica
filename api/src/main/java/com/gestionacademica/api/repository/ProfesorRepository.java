@@ -6,5 +6,6 @@ import com.gestionacademica.api.entity.Profesor;
 
 public interface ProfesorRepository extends JpaRepository<Profesor, Integer> {
 
-}
 
+java.util.List<Profesor> findByNombreCompletoContainingIgnoreCaseOrCorreoContainingIgnoreCase(String nombre, String correo);
+}

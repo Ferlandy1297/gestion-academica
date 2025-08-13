@@ -6,4 +6,7 @@ import com.gestionacademica.api.entity.Estudiante;
 
 public interface EstudianteRepository extends JpaRepository<Estudiante, String> {
 
+
+java.util.List<Estudiante> findByApellidoContainingIgnoreCase(String apellido);
+    java.util.List<Estudiante> findByNombreContainingIgnoreCase(String nombre);
 }

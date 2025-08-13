@@ -1,7 +1,5 @@
 package com.gestionacademica.api.controller;
 
-import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gestionacademica.api.entity.Curso;
@@ -30,15 +29,24 @@ public class CursoController {
         return cursoService.crearCurso(curso);
     }
 
+    
     @GetMapping
-    public List<Curso> obtenerTodos() {
-        return cursoService.obtenerTodos();
+    public java.util.List<com.gestionacademica.api.dto.CursoDTO> listar(
+        @RequestParam(required = false) String ciclo,
+        @RequestParam(required = false) String semestre,
+        @RequestParam(required = false) Integer profesorId,
+        @RequestParam(required = false) String prerequisito
+    ) {
+        return cursoService.listarDTO(ciclo, semestre, profesorId, prerequisito);
     }
 
+
+    
     @GetMapping("/{codigo}")
-    public Optional<Curso> obtenerPorCodigo(@PathVariable String codigo) {
-        return cursoService.obtenerPorCodigo(codigo);
+    public java.util.Optional<com.gestionacademica.api.dto.CursoDTO> obtener(@PathVariable String codigo) {
+        return cursoService.obtenerDTO(codigo);
     }
+
 
     @PutMapping("/{codigo}")
     public Curso actualizar(@PathVariable String codigo, @RequestBody Curso curso) {
@@ -50,3 +58,4 @@ public class CursoController {
         cursoService.eliminarCurso(codigo);
     }
 }
+
